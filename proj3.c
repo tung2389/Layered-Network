@@ -64,7 +64,7 @@ int main(int argc, char** argv)
     
     int result = l4_write("username", strlen("username") + 1, argv[1], strlen(argv[1]) + 1);
     if (!result) 
-	{
+	  {
       fprintf(stderr, "l4_write error sending username\n");
       exit(1);
     }
