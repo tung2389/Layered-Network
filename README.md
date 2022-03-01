@@ -49,6 +49,19 @@ Reads a message and stores it starting at the address specified by buffer. No mo
 than maxLength bytes will be put into memory. If a message is received by l3_read
 that would require more than maxLength bytes, l3_read return -1. If some errors are detected in the message, l3_read return -1. Upon successful reception of a message, the size of the message (the number of bytes stored in buffer) is returned.
 
+### Implementation detail:
+- I use CRC-32, which is used by Ethernet for this layer. The normal polynomial of CRC-32 is 0x04C11DB7.
+- However, there are some differences between my CRC-32 implementation vs Ethernet CRC-32:
+    - The initial value of my crc used in calculation is **0**, instead of **0xFFFFFFFF**.
+    - The final XOR value of my crc is 0, instead of **0xFFFFFFFF**.
+    - My implementation doesn't reflect the input and the result.
+- Resources for the CRC calculation technique that I use:
+    - https://en.wikipedia.org/wiki/Cyclic_redundancy_check
+    - http://www.sunshine2k.de/articles/coding/crc/understanding_crc.html#ch6
+    - https://barrgroup.com/embedded-systems/how-to/crc-calculation-c-code
+- For CRC testing:
+    - http://www.sunshine2k.de/coding/javascript/crc/crc_js.html
+
 ## Layer 4: Name/Value Pairs
 Layer 4 will provide a mechanism for sending and receiving values that have an associated
 name.
