@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
+#include <arpa/inet.h>
 
 // Interface to Layer 2
 extern int l2_read(char* buffer, int maxlength);
@@ -14,17 +16,41 @@ typedef uint32_t crc_t;
 
 crc_t crc_table[256];
 
-bool check_crc(char *buffer);
+bool check_crc(char *buffer, int length);
 void init_crc_table();
 crc_t calc_crc(char *buffer, int length);
 void l3_init();
 
 int l3_read(char* buffer, int maxlength) {
+    if(maxlength < sizeof(crc_t)) return -1;
 
+    int l3_max_length = maxlength + sizeof(crc_t);
+    char l3_buf[l3_max_length];
+    int length = l2_read(l3_buf, l3_max_length);
+
+    if(length == -1) return -1;
+    // Check crc
+    if(!check_crc(l3_buf, length)) return -1;
+
+    // Strip the crc
+    memcpy(buffer, l3_buf, length - sizeof(crc_t));
+    return length - sizeof(crc_t);
 }
 
 int l3_write(char* buffer, int length) {
+    // Create new buffer with length of crc + length of buffer from upper layer.
+    int l3_length = length + sizeof(crc_t);
+    char l3_buf[l3_length];
 
+    // Create CRC for the buffer from upper layer
+    crc_t crc = calc_crc(buffer, length);
+    crc = htonl(crc);
+    
+    // Copy the CRC and the old buffer to the new buffer
+    memcpy(l3_buf, buffer, length);
+    memcpy(l3_buf + length, &crc, sizeof(crc_t));
+    
+    return l2_write(l3_buf, l3_length);
 }
 
 void l3_init() {
@@ -56,4 +82,8 @@ crc_t calc_crc(char *buffer, int length) {
         crc = (crc_t) ((crc << 8) ^ (crc_t) (crc_table[pos]));
     }
     return crc;
+}
+
+bool check_crc(char *buffer, int length) {
+    return (calc_crc(buffer, length) == 0);
 }

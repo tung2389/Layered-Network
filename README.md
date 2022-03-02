@@ -55,6 +55,8 @@ that would require more than maxLength bytes, l3_read return -1. If some errors 
     - The initial value of my crc used in calculation is **0**, instead of **0xFFFFFFFF**.
     - The final XOR value of my crc is 0, instead of **0xFFFFFFFF**.
     - My implementation doesn't reflect the input and the result.
+- My CRC implementation also use the CRC table technique for optimization. Therefore, the ```l4_init``` method need to be called once before sending or receiving data.
+
 - Resources for the CRC calculation technique that I use:
     - https://en.wikipedia.org/wiki/Cyclic_redundancy_check
     - http://www.sunshine2k.de/articles/coding/crc/understanding_crc.html#ch6
