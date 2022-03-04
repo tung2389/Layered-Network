@@ -6,10 +6,15 @@
 
 typedef uint32_t crc_t;
 
+// l1 function declarations
 extern crc_t crc_table[256];
 extern void l3_init();
 extern crc_t calc_crc(char *buffer, int length);
 extern bool check_crc(char *buffer, int length);
+
+// l2 function declarations
+extern int build_l4_packet(char* buffer, int* length, char* name, int nameLength, char* value, int valueLength);
+extern int read_l4_packet(char* buffer, char* name, int* nameLength, char* value, int* valueLength);
 
 void test_calc_crc() {
     l3_init();
@@ -37,7 +42,46 @@ void test_check_crc() {
     printf("Test check_crc passed!\n");
 }
 
+void test_build_l4_packet() {
+    char buf[1024];
+    int length;
+    
+    assert(build_l4_packet(buf, &length, "name", 4, "value", 5) == 1);
+
+    assert(length == 13);
+
+    char buf2[13] = {0x00, 0x04, 0x00, 0x05, 'n', 'a', 'm', 'e', 'v', 'a', 'l', 'u', 'e'};
+    assert(strcmp(buf, buf2) == 0);
+
+    printf("Test build_l4_packet passed!\n");
+}
+
+void test_read_l4_packet() {
+    char buf[1024] = {0x00, 0x04, 0x00, 0x05, 'n', 'a', 'm', 'e', 'v', 'a', 'l', 'u', 'e'};
+    char name[1024];
+    memset(name, 0, 1024);
+    int nameLength;
+    char value[1024];
+    memset(value, 0, 1024);
+    int valueLength;
+
+    assert(read_l4_packet(buf, name, &nameLength, value, &valueLength) == 1);
+
+    assert(strcmp(name, "name") == 0);
+    assert(strcmp(value, "value") == 0);
+
+    printf("Test read_l4_packet passed!\n");
+}
+
 int main() {
+    // test l3
+    printf("Testing l3...\n");
     test_calc_crc();
     test_check_crc();
+    printf("\n");
+
+    // test l4
+    printf("Testing l4...\n");
+    test_build_l4_packet();
+    test_read_l4_packet();
 }
