@@ -1,7 +1,7 @@
 # Makefile for Project 3
 #****************************************************************
 
-COPTIONS = -g -Wall
+COPTIONS = -g -Wall -Werror
 LDOPTIONS = 
 LIB = 
 
@@ -22,6 +22,12 @@ l3.o: l3.c
 
 l4.o: l4.c
 	gcc $(COPTIONS) -c l4.c
+
+test.o: test.c
+	gcc $(COPTIONS) -c test.c
+
+test: l1.o l2.o l3.o l4.o test.o
+	gcc $(COPTIONS) -o test l1.o l2.o l3.o l4.o test.o
 
 proj3.o: proj3.c
 	gcc $(COPTIONS) -c proj3.c
