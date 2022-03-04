@@ -4,12 +4,12 @@ This is an implementation of a layered network, facilitating half-duplex communi
 ## Layer 1: Single Byte
 At the lowest level, the communication is done via UNIX pipe. This layer simply provides an interface to read a single byte to STDIN and write a single byte to STDOUT.
 
-```c++
+```c
 int l1_write(char b);
 ```
 Writes the byte specified by b. Returns 1 (true) on success or 0 (false) on error.
 
-```c++
+```c
 int l1_read(char* b);
 ```
 Reads one byte and copies the byte to the address specified by b. Returns 1 (true) on
@@ -18,13 +18,13 @@ success or 0 (false) on error.
 ## Layer 2: Messages
 Layer 2 provides the ability to send and receive a message. A message is simply a sequence of bytes with a particular format. 
 
-```c++
+```c
 int l2_write(char* buffer, int length);
 ```
 Sends a message consisting of the sequence of bytes starting at the address in buffer
 and having length length. Returns length on success or -1 on an error
 
-```c++
+```c
 int l2_read(char* buffer, int maxLength);
 ```
 Reads a message and stores it at the address specified by buffer. No more than
@@ -36,13 +36,13 @@ Layer 3 adds error detection to the services provided by layer 2. The service in
 for layer 3 looks the same as the layer 2 service interface, but the layer 3 read also
 return a -1 if it detects an error in the received message. Layer 3 uses a CRC attached to each message to check if an error has occured or not. 
 
-```c++
+```c
 int l3_write(char* buffer, int length);
 ```
 Sends a message that consists of the sequence of bytes starting at the address specified
 by buffer and having length length. Returns length on success or -1 on error.
 
-```c++
+```c
 int l3_read(char* buffer, int maxLength);
 ```
 Reads a message and stores it starting at the address specified by buffer. No more
@@ -68,14 +68,14 @@ that would require more than maxLength bytes, l3_read return -1. If some errors 
 Layer 4 will provide a mechanism for sending and receiving values that have an associated
 name.
 
-```c++
+```c
 int l4 write(char *name, int nameLength, char *value, int valueLength)
 ```
 Sends the (name, value) pair to the receiver, where nameLength specifies the number
 of bytes in name, and valueLength specifies the number of bytes in value. Returns 1
 (true) on success or 0 (false) on error.
 
-```c++
+```c
 int l4 read(char* name, int* nameLength, char* value, int* valueLength)
 ```
 The l4 read function reads a (name, value) pair into the buffers pointed to by name and
