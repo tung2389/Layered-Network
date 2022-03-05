@@ -9,7 +9,7 @@ LIB =
 # Entry to bring the package up to date
 #    The "make all" entry should be the first real entry
 
-all: proj3
+all: peer
 
 l1.o: l1.c
 	gcc $(COPTIONS) -c l1.c
@@ -30,7 +30,7 @@ test: l1.o l2.o l3.o l4.o test.o
 	gcc $(COPTIONS) -o test l1.o l2.o l3.o l4.o test.o
 
 peer.o: peer.c
-	gcc $(COPTIONS) -c proj3.c
+	gcc $(COPTIONS) -c peer.c
 
 peer: l1.o l2.o l3.o l4.o peer.o
 	gcc $(LDOPTIONS) -o peer l1.o l2.o l3.o l4.o peer.o $(LIB)
@@ -38,4 +38,4 @@ peer: l1.o l2.o l3.o l4.o peer.o
 
 # delete derived files in preparation for rebuild
 clean:
-	rm -f *.o peer
+	rm -f *.o peer test
