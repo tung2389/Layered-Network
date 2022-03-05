@@ -19,6 +19,7 @@ int l4_read(char* name, int* nameLength, char* value, int* valueLength)
 {
     if (*nameLength > MAX_LENGTH || *valueLength > MAX_LENGTH || *nameLength + *valueLength > MAX_LENGTH)
     {
+        fprintf(stderr, "Error -- buffer size not equals to length\n");
         return 0;
     }
 
@@ -28,6 +29,7 @@ int l4_read(char* name, int* nameLength, char* value, int* valueLength)
     
     if (length == -1)
     {
+        fprintf(stderr, "Error -- l3_read\n");
         return 0;
     }
 
@@ -58,8 +60,8 @@ int build_l4_packet(char* buffer, int* length, char* name, int nameLength, char*
     }
 
     // Build the packet
-    uint16_t uint16_nameLength = htons((u_int16_t)nameLength);
-    uint16_t uint16_valueLength = htons((u_int16_t)valueLength);
+    uint16_t uint16_nameLength = htons((uint16_t)nameLength);
+    uint16_t uint16_valueLength = htons((uint16_t)valueLength);
 
     memcpy(buffer, &uint16_nameLength, sizeof(uint16_t));
     memcpy(buffer + sizeof(uint16_t), &uint16_valueLength, sizeof(uint16_t));
