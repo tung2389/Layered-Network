@@ -29,13 +29,13 @@ test.o: test.c
 test: l1.o l2.o l3.o l4.o test.o
 	gcc $(COPTIONS) -o test l1.o l2.o l3.o l4.o test.o
 
-proj3.o: proj3.c
+peer.o: peer.c
 	gcc $(COPTIONS) -c proj3.c
 
-proj3: l1.o l2.o l3.o l4.o proj3.o
-	gcc $(LDOPTIONS) -o proj3 l1.o l2.o l3.o l4.o proj3.o $(LIB)
+peer: l1.o l2.o l3.o l4.o peer.o
+	gcc $(LDOPTIONS) -o peer l1.o l2.o l3.o l4.o peer.o $(LIB)
 	
 
 # delete derived files in preparation for rebuild
 clean:
-	rm -f *.o proj3
+	rm -f *.o peer
