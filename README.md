@@ -27,6 +27,8 @@ As visually depicted in the image above, layer 2 attaches a header that contains
 
 As per the specifications of this project, one important assumption we make at layer 2 is that the message or **payload** of the message (excluding the header) cannot be longer than 1024 bytes. Thus, ```l2_write``` and ```l2_read``` will return -1 if this condition is not met.
 
+### Layer 2 Functions
+
 ```c
 int l2_write(char* buffer, int length);
 ```
@@ -45,6 +47,8 @@ We choose to use a Cyclic Redundancy Check or CRC, the error detection system us
 ![l3 visual](images/l3_message.JPG)
 
 As visually represented above, we see that the CRC field that we calculate, which is of a fixed length, is appended to the end of the payload by layer 3.
+
+### Layer 3 Functions
 
 ```c
 int l3_write(char* buffer, int length);
@@ -70,6 +74,8 @@ Layer 4 provides a mechanism for sending and receiving values that have an assoc
 ![l4 visual](images/l4_message.JPG)
 
 In a similar fashion to layer 2, layer 4 attaches a header with two `uint16_t` fields again in network byte order, where the first field records the length in bytes of the name buffer, and the second field, the length in bytes of the value buffer.
+
+### Layer 4 Functions
 
 ```c
 int l4 write(char *name, int nameLength, char *value, int valueLength)
