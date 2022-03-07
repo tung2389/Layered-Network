@@ -19,11 +19,11 @@ extern int read_l4_packet(char* buffer, char* name, int* nameLength, char* value
 void test_calc_crc() {
     init_crc_table();
     char *buf = "123456789";
-    assert((crc_t) calc_crc(buf, strlen(buf)) == 0x89A1897F);
+    assert(calc_crc(buf, strlen(buf)) == 0x89A1897F);
     buf = "fsdjkfsdafdsdsf";
-    assert((crc_t) calc_crc(buf, strlen(buf)) == 0xC664EABF);
+    assert(calc_crc(buf, strlen(buf)) == 0xC664EABF);
     buf = "ruerweojdcdnsci212332";
-    assert((crc_t) calc_crc(buf, strlen(buf)) == 0xF27C4D33);
+    assert(calc_crc(buf, strlen(buf)) == 0xF27C4D33);
     printf("Test calc_crc passed!\n");
 }
 
@@ -43,7 +43,7 @@ void test_check_crc() {
 }
 
 void test_build_l4_packet() {
-    char buf[1024];
+    char buf[13];
     int length;
     
     assert(build_l4_packet(buf, &length, "name", 4, "value", 5) == 1);
@@ -57,7 +57,7 @@ void test_build_l4_packet() {
 }
 
 void test_read_l4_packet() {
-    char buf[1024] = {0x00, 0x04, 0x00, 0x05, 'n', 'a', 'm', 'e', 'v', 'a', 'l', 'u', 'e'};
+    char buf[13] = {0x00, 0x04, 0x00, 0x05, 'n', 'a', 'm', 'e', 'v', 'a', 'l', 'u', 'e'};
     char name[1024];
     memset(name, 0, 1024);
     int nameLength;

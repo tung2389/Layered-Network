@@ -4,6 +4,7 @@
 // Created 1/28/03, Thomas C. Bressoud
 // Modified 2/7/05, Jessen Havill
 //          2/17/22, Jessen Havill
+//          3/6/222, Tung Luu
 //
 // This code can be used to test you layer 4 implementation
 //   (which in turn can/should be used to test your layer 3, etc.)
@@ -30,7 +31,7 @@ extern int l4_read(char*, int*, char*, int*);
 //   connect a sender and receiver by having the shell set up a pipe between
 //   them, as follows (assuming the generated executable is named proj3:
 //
-//   ./proj3 <username> <password> | ./proj3
+//   ./peer <username> <password> | ./peer
 //-------------------------------------------------------------------------
 int main(int argc, char** argv) 
 {

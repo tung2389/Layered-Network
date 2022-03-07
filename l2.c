@@ -19,13 +19,13 @@ int l2_read(char* buffer, int maxlength)
 {
     char length_buf[2];
 
-    // Read the length
+    // Read the length from the header
     for (int i = 0; i < 2; i++)
     {
         if (l1_read(&length_buf[i]) == -1)
         {
             perror("l1_read");
-            return 0;
+            return -1;
         }
     }
 
@@ -39,7 +39,7 @@ int l2_read(char* buffer, int maxlength)
 
 int l2_write(char* buffer, int length)
 {
-    char l2_buf[MAX_LENGTH];
+    char l2_buf[MAX_LENGTH + 2];
     int l2_length = 0;
 
     // Build the L2 packet
@@ -58,14 +58,14 @@ int l2_write(char* buffer, int length)
         };
     }
 
-    return l2_length;
+    return length;
 }
 
 int build_l2_packet(char* l2_buf, int* l2_length, char* buffer, int length)
 {
-    if (length + 2 > MAX_LENGTH)
+    if (length > MAX_LENGTH)
     {
-        fprintf(stderr, "Error -- buffer size not equals to length\n");
+        fprintf(stderr, "l2 Error -- The message cannot be longer than %d bytes\n", MAX_LENGTH);
         return 0;
     }
 
@@ -81,15 +81,15 @@ int build_l2_packet(char* l2_buf, int* l2_length, char* buffer, int length)
 
 int read_l2_packet(char* buffer, int* maxlength, char* length_buf)
 {
-    if (*maxlength > MAX_LENGTH)
-    {
-        return 0;
-    }
-
     // Convert the length
     uint16_t uint16_length;
     memcpy(&uint16_length, length_buf, sizeof(uint16_t));
     int length = (int)ntohs(uint16_length);
+
+    if(length > MAX_LENGTH) {
+        fprintf(stderr, "l2 Error -- The message cannot be longer than %d bytes\n", MAX_LENGTH);
+        return 0;
+    }
 
     if (length > *maxlength)
     {

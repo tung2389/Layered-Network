@@ -4,8 +4,6 @@
 #include<string.h>  
 #include<stdio.h>
 
-#define MAX_LENGTH 1024
-
 // Interface to Layer 3
 extern int l3_read(char* buffer, int maxlength);
 extern int l3_write(char* buffer, int length);
@@ -16,16 +14,10 @@ int read_l4_packet(char* buffer, char* name, int* nameLength, char* value, int* 
 
 
 int l4_read(char* name, int* nameLength, char* value, int* valueLength)
-{
-    if (*nameLength > MAX_LENGTH || *valueLength > MAX_LENGTH || *nameLength + *valueLength > MAX_LENGTH)
-    {
-        fprintf(stderr, "Error -- buffer size not equals to length\n");
-        return 0;
-    }
-
-    char l4_buf[MAX_LENGTH];
-
-    int length = l3_read(l4_buf, MAX_LENGTH);
+{ 
+    int l4_max_length = 2 * sizeof(uint16_t) + *nameLength + *valueLength;
+    char l4_buf[l4_max_length];
+    int length = l3_read(l4_buf, l4_max_length);
     
     if (length == -1)
     {
@@ -39,7 +31,7 @@ int l4_read(char* name, int* nameLength, char* value, int* valueLength)
 
 int l4_write(char* name, int nameLength, char* value, int valueLength)
 {
-    char l4_buf[MAX_LENGTH];
+    char l4_buf[2 * sizeof(uint16_t) + nameLength + valueLength];
     int l4_length = 0;
 
     // Build the L4 packet
@@ -54,11 +46,6 @@ int l4_write(char* name, int nameLength, char* value, int valueLength)
 // Build l4 packet
 int build_l4_packet(char* buffer, int* length, char* name, int nameLength, char* value, int valueLength)
 {
-    if (nameLength + valueLength > MAX_LENGTH)
-    {
-        return 0;
-    }
-
     // Build the packet
     uint16_t uint16_nameLength = htons((uint16_t)nameLength);
     uint16_t uint16_valueLength = htons((uint16_t)valueLength);
@@ -88,8 +75,20 @@ int read_l4_packet(char* buffer, char* name, int* nameLength, char* value, int* 
     memcpy(&uint16_nameLength, buffer, sizeof(uint16_t));
     memcpy(&uint16_valueLength, buffer + sizeof(uint16_t), sizeof(uint16_t));
 
-    *nameLength = (int)ntohs(uint16_nameLength);
-    *valueLength = (int)ntohs(uint16_valueLength);
+    uint16_nameLength = ntohs(uint16_nameLength);
+    uint16_valueLength = ntohs(uint16_valueLength);
+
+    // The name is longer than the its maximum allowed length
+    if(uint16_nameLength > (uint16_t) *nameLength) {
+        return 0;
+    }
+    // The value is longer than its maximum allowed length
+    if(uint16_valueLength > (uint16_t) *valueLength) {
+        return 0;
+    }
+
+    *nameLength = (int) uint16_nameLength;
+    *valueLength = (int) uint16_valueLength;
 
     memcpy(name, buffer + 2 * sizeof(uint16_t), *nameLength);
     memcpy(value, buffer + 2 * sizeof(uint16_t) + *nameLength, *valueLength);

@@ -31,6 +31,9 @@ Reads a message and stores it at the address specified by buffer. No more than
 maxlength bytes will be put into memory. If a message received by l2_read would
 require more than maxLength bytes, l2_read return -1. Upon successful reception of a message, the size of the message (the number of bytes actually stored in buffer) is returned.
 
+### Implementation details:
+- One important assumption at the layer 2 is that the **payload** of the message (excluding the header) cannot be longer than 1024 bytes. ```l2_write``` and ```l2_read``` will return -1 if this condition is not met.
+
 ## Layer 3: Messages with Error Detection
 Layer 3 adds error detection to the services provided by layer 2. The service interface
 for layer 3 looks the same as the layer 2 service interface, but the layer 3 read also
