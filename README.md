@@ -23,7 +23,7 @@ Layer 2 provides the ability to send and receive a message. A message is simply 
 
 ![l2 visual](images/l2_message.JPG)
 
-As visually depicted in the image above, layer 2 attaches a header that contains a single `uint16_t` field in network byte order that indicates the length in bytes of the payload. Here we also assume that the payload is just some sequence of bytes.
+As visually depicted in the image above, layer 2 attaches a header that contains a single `uint16_t` field in network byte order that indicates the length in bytes of the payload.
 
 As per the specifications of this project, one important assumption we make at layer 2 is that the message or **payload** of the message (excluding the header) cannot be longer than 1024 bytes. Thus, ```l2_write``` and ```l2_read``` will return -1 if this condition is not met.
 
