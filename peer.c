@@ -4,7 +4,7 @@
 // Created 1/28/03, Thomas C. Bressoud
 // Modified 2/7/05, Jessen Havill
 //          2/17/22, Jessen Havill
-//          3/6/222, Tung Luu
+//          3/6/22, Tung Luu
 //
 // This code can be used to test you layer 4 implementation
 //   (which in turn can/should be used to test your layer 3, etc.)
@@ -29,7 +29,7 @@ extern int l4_read(char*, int*, char*, int*);
 //   processing arguments for the values of a username and password.
 //   The given layer 1 fucntions communicate over stdin/stdout, so we can 
 //   connect a sender and receiver by having the shell set up a pipe between
-//   them, as follows (assuming the generated executable is named proj3:
+//   them, as follows (assuming the generated executable is named peer:
 //
 //   ./peer <username> <password> | ./peer
 //-------------------------------------------------------------------------
